@@ -1,0 +1,31 @@
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Dense, Flatten, Dropout
+from sklearn import preprocessing
+
+(X_train,Y_train),(X_test,Y_test)= keras.datasets.boston_housing.load_data()
+
+X_train.shape
+
+Y_train.shape
+
+X_test.shape
+
+Y_test.shape
+
+model= Sequential()
+
+model.add(Dense(264, input_dim=13, activation='relu'))
+#model.add(Dropout(0.2))
+model.add(Dense(56,activation='relu'))
+model.add(Dense(13,activation='relu'))
+#model.add(Dropout(1))
+
+model.summary()
+
+model.compile(loss='mean_squared_error', optimizer='adam', metrics=['mean_absolute_error'], )
+
+model.fit(X_train,Y_train,epochs= 50, batch_size=42)
+
+loss,mae=model.evaluate(X_test,Y_test)
