@@ -1,0 +1,61 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <omp.h>
+
+using namespace std;
+
+const int MAXN = 1e5;
+
+vector<int> adj[MAXN + 5]; // adjacency list
+bool visited[MAXN + 5];    // mark visited nodes
+
+void bfs(int start_node) {
+    queue<int> queue;
+    queue.push(start_node);
+
+    while (!queue.empty()) {
+        int current_node = queue.front();
+        queue.pop();
+
+        if (!visited[current_node]) {
+            visited[current_node] = true;
+            cout << "Visited node: " << current_node << endl;
+
+            #pragma omp parallel for
+            for (int i = 0; i < adj[current_node].size(); i++) {
+                int next_node = adj[current_node][i];
+                if (!visited[next_node]) {
+                    #pragma omp critical
+                    queue.push(next_node);
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    cout << "Please enter the number of nodes: ";
+    int n; // number of nodes
+    cin >> n;
+
+    cout << "Please enter the number of edges: ";
+    int m; // number of edges
+    cin >> m;
+
+    for (int i = 1; i <= m; i++) {
+        cout << "Enter edge " << i << ": ";
+        int u, v; // edge between u and v
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    cout << "Enter the starting node of BFS: ";
+    int start_node; // start node of BFS
+    cin >> start_node;
+
+    bfs(start_node);
+
+    return 0;
+}
